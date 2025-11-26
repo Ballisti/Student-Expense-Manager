@@ -9,7 +9,7 @@ public class DiscountedExpense extends Expense {
         this.finalAmount = this.amount*(1-discount/100);
     }
 
-    public double getAmount() {
+    public double getFinalAmount() {
         return finalAmount;
     }
     public double getDiscount() {
@@ -17,6 +17,6 @@ public class DiscountedExpense extends Expense {
     }
 
     public String display(){
-        return super.display()+" with discount of "+getDiscount()+"% = £"+getAmount();
+        return super.display()+" with discount of "+getDiscount()+"% = £"+getFinalAmount();
     }
 }
