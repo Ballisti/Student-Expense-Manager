@@ -1,69 +1,102 @@
 
-//requires jdk 25+ for use of IO instead of System.out
+/*
+    Written by Calum Breen-Chapman
+    requires jdk 25+ for use of IO instead of System.out
+*/
 
 import java.util.ArrayList;
 
 public class Main {
 
-    static ArrayList<Expense> Expenses = new ArrayList<>();
-    static ArrayList<DiscountedExpense> DiscountedExpenses = new ArrayList<>();
+    static ArrayList<Expense> Expenses = new ArrayList<Expense>();
+    static ArrayList<DiscountedExpense> DiscountedExpenses = new ArrayList<DiscountedExpense>();
 
+    // adds element into sorted arrayList
     static void addExpense(){
-        if(Expenses.isEmpty()){Expenses.add(new Expense(IO.readln("Enter the expense name: "),Float.parseFloat(IO.readln("Enter the price: "))));}
-        else{
-            float value=Float.parseFloat(IO.readln("Enter the price: "));
+
+        String name=IO.readln("Enter the expense name: ");
+        double value=Double.parseDouble(IO.readln("Enter the price: "));
+        Expense TempObj=new Expense(name,value);
+
+        if(!Expenses.isEmpty()){
             for (int i = 0; i<Expenses.size();i++){
-                if (value<=Expenses.get(i).getAmount()){Expenses.add(i,new Expense(IO.readln("Enter the expense name: "),value)); break;}
+                if (value<=Expenses.get(i).getAmount()){Expenses.add(i,TempObj); return;}
             }
         }
-    }
-    static void addDiscountedExpense(){
-        DiscountedExpenses.add(new DiscountedExpense(IO.readln("Enter the expense name: "),Float.parseFloat(IO.readln("Enter the price: ")),Float.parseFloat(IO.readln("Enter the Discount: %"))));
+        Expenses.add(TempObj);
     }
 
+    static void addDiscountedExpense(){
+
+        String name=IO.readln("Enter the expense name: ");
+        double value=Double.parseDouble(IO.readln("Enter the price: "));
+        double discount=Double.parseDouble(IO.readln("Enter the discount: "));
+        DiscountedExpense TempObj=new DiscountedExpense(name,value,discount);
+
+        if(!DiscountedExpenses.isEmpty()){
+            for (int i = 0; i<DiscountedExpenses.size();i++){
+                if (TempObj.getAmount()<=DiscountedExpenses.get(i).getAmount()){DiscountedExpenses.add(i,TempObj); return;}
+            }
+        }
+        DiscountedExpenses.add(TempObj);
+    }
+
+    // displays all arrays sorted by type and then price
     static void viewAllExpenses(){
-        IO.println("\n====Expenses====");
+        IO.println("====Expenses====");
 
         if(Expenses.isEmpty()&& DiscountedExpenses.isEmpty()){IO.println("you have no expenses");return;}
         for(Expense e: Expenses){
-            IO.println(e.Display());
+            IO.println(e.display());
         }
-        IO.println("\n====Discounted Expenses====");
+        IO.println("====Discounted Expenses====");
         for (DiscountedExpense d: DiscountedExpenses){
-            IO.println(d.Display());
+            IO.println(d.display());
         }
-        IO.println();
     }
+
     static String showTotalSpend(){
         if(Expenses.isEmpty() && DiscountedExpenses.isEmpty()){return "you have no expenses";}
-        float totalSpend = 0;
+        double totalSpend = 0;
         for(Expense e: Expenses){
             totalSpend+=e.getAmount();
         }
         for(DiscountedExpense d: DiscountedExpenses){
-            totalSpend+=d.getFinalAmount();
+            totalSpend+=d.getAmount();
         }
         return "total spend: £"+totalSpend;
     }
 
+    // drawback doesn't show ties within same category
     static String showHighestExpense(){
         if(Expenses.isEmpty() && DiscountedExpenses.isEmpty()){return "you have no expenses";}
-        return Expenses.getLast().Display();
+        else if(DiscountedExpenses.isEmpty()||Expenses.getLast().getAmount()>DiscountedExpenses.getLast().getAmount()){
+            return Expenses.getLast().display();
+        }
+        else if(Expenses.isEmpty()||Expenses.getLast().getAmount()<DiscountedExpenses.getLast().getAmount()){
+            return DiscountedExpenses.getLast().display();
+        }
+        else{
+            return Expenses.getLast().display()+"\n"+DiscountedExpenses.getLast().display();
+        }
     }
 
     public static void main(String[] args) {
         int userInput=0;
-        while (userInput!=6){
+        while(true){
             IO.print(
-                    "====Student Expense Manager====\n" +
-                    "1. Add Expense\n" +
-                    "2. Add Discounted Expense\n" +
-                    "3. View All Expenses\n" +
-                    "4. Show Total Spending\n" +
-                    "5. Show Highest Expense\n" +
-                    "6. Exit\n"
+                    """
+                    ====Student Expense Manager====
+                    1. Add Expense
+                    2. Add Discounted Expense
+                    3. View All Expenses
+                    4. Show Total Spending
+                    5. Show Highest Expense
+                    6. Exit
+                    """
             );
-            userInput=Integer.parseInt(IO.readln("enter your choice:" ));
+            userInput=Integer.parseInt(IO.readln("enter your choice: "));
+            IO.println();
             switch (userInput){
                 case 1:
                     addExpense();
@@ -80,17 +113,17 @@ public class Main {
                     break;
                 case 5:
                     IO.println("====Highest Expense====");
-                    showHighestExpense();
+                    IO.println(showHighestExpense());
                     break;
                 case 6:
                     IO.println("you have exited the spend manager goodbye");
-                    break;
+                    return;
                 default:
                     IO.println("Please enter a valid choice");
                     break;
             }
-
+            IO.readln("press enter to continue");
+            IO.println();
         }
-
     }
 }

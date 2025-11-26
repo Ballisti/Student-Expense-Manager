@@ -1,17 +1,19 @@
 public class Expense {
+
     String title;
-    Float amount;
-    Expense(String title, Float amount) {
+    double amount;
+
+    Expense(String title, double amount) {
         this.title = title;
         this.amount = amount;
     }
     public String getTitle() {
         return title;
     }
-    public Float getAmount() {
+    public double getAmount() {
         return amount;
     }
-    public String Display(){
+    public String display(){
         return getTitle() + " £" + getAmount();
     }
 }

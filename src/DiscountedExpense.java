@@ -1,21 +1,22 @@
 public class DiscountedExpense extends Expense {
 
-    float finalAmount;
-    float discount;
+    double finalAmount;
+    double discount;
 
-    public DiscountedExpense(String title,float amount,float discount) {
+    public DiscountedExpense(String title,double amount,double discount) {
         super(title,amount);
+        this.discount=discount;
         this.finalAmount = this.amount*(1-discount/100);
     }
 
-    public float getFinalAmount() {
+    public double getAmount() {
         return finalAmount;
     }
-    public float getDiscount() {
+    public double getDiscount() {
         return discount;
     }
 
-    public String Display(){
-        return super.Display()+" with discount of "+getDiscount()+"% = £"+getFinalAmount();
+    public String display(){
+        return super.display()+" with discount of "+getDiscount()+"% = £"+getAmount();
     }
 }
